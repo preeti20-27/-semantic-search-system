@@ -28,6 +28,52 @@ A **custom semantic cache** is implemented from scratch to avoid redundant vecto
 This avoids redundant computation and improves query response time.
 
 ---
+## stem Architecture Diagram
+                ┌─────────────────────┐
+                │     User Query      │
+                └──────────┬──────────┘
+                           │
+                           ▼
+          ┌────────────────────────────────┐
+          │ SentenceTransformer Embedding  │
+          │      (all-MiniLM-L6-v2)        │
+          └──────────┬─────────────────────┘
+                     │
+                     ▼
+        ┌───────────────────────────────┐
+        │ Gaussian Mixture Model (GMM)  │
+        │     Predict Query Cluster     │
+        └──────────┬────────────────────┘
+                   │
+                   ▼
+        ┌───────────────────────────────┐
+        │  Cluster-Aware Semantic Cache │
+        │   (Store queries per cluster) │
+        └──────────┬────────────────────┘
+                   │
+        ┌──────────┴───────────┐
+        │                      │
+        ▼                      ▼
+ ┌───────────────┐      ┌──────────────────┐
+ │  Cache Hit    │      │   Cache Miss     │
+ │ similarity>0.9│      │                  │
+ └──────┬────────┘      └────────┬─────────┘
+        │                         │
+        ▼                         ▼
+┌───────────────┐        ┌─────────────────┐
+│ Return Cached │        │  FAISS Vector   │
+│    Results    │        │      Search     │
+└──────┬────────┘        └────────┬────────┘
+       │                          │
+       ▼                          ▼
+                     ┌────────────────────────┐
+                     │ Store Result in Cache  │
+                     └──────────┬─────────────┘
+                                │
+                                ▼
+                       ┌─────────────────┐
+                       │ Return Results  │
+                       └─────────────────┘
 
 ## Project Structure
 
@@ -149,3 +195,4 @@ The following files are generated during preprocessing and are not included in t
 * gmm_model.pkl
 
 These files contain the document embeddings, FAISS vector index, and the trained clustering model used by the API.
+
