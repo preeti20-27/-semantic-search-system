@@ -28,7 +28,9 @@ A **custom semantic cache** is implemented from scratch to avoid redundant vecto
 This avoids redundant computation and improves query response time.
 
 ---
-## System Architecture Diagram
+## System Architecture
+
+```
                 ┌─────────────────────┐
                 │     User Query      │
                 └──────────┬──────────┘
@@ -74,6 +76,7 @@ This avoids redundant computation and improves query response time.
                        ┌─────────────────┐
                        │ Return Results  │
                        └─────────────────┘
+```
 
 ## Project Structure
 
@@ -195,5 +198,6 @@ The following files are generated during preprocessing and are not included in t
 * gmm_model.pkl
 
 These files contain the document embeddings, FAISS vector index, and the trained clustering model used by the API.
+
 
 
